@@ -31,17 +31,12 @@ export async function scrapeAmazonProduct(url: string) {
     // Extract the product title
     const title = $('#productTitle').text().trim();
     const currentPrice = extractPrice(
-      $('.priceToPay span.a-price-whole'),
-      $('.a.size.base.a-color-price'),
+      $('#apex_desktop_dealsAccordionRow #corePriceDisplay_desktop_feature_div .a-section .reinventPricePriceToPayMargin.priceToPay .a-offscreen'),
       $('.a-button-selected .a-color-base'),
     );
 
     const originalPrice = extractPrice(
-      $('#priceblock_ourprice'),
-      $('.a-price.a-text-price span.a-offscreen'),
-      $('#listPrice'),
-      $('#priceblock_dealprice'),
-      $('.a-size-base.a-color-price')
+      $('.a-column .a-spacing-top-mini .a-price .a-offscreen'),
     );
 
     const outOfStock = $('#availability span').text().trim().toLowerCase() === 'currently unavailable';

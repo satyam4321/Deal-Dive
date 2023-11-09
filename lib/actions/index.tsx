@@ -9,15 +9,15 @@ import { User } from "@/types";
 import { generateEmailBody, sendEmail } from "../nodemailer";
 
 export async function scrapeAndStoreProduct(productUrl: string) {
-  if (!productUrl) return;
+  // if (!productUrl) return;
 
   try {
-    connectToDB();
+    await connectToDB();
 
     const scrapedProduct = await scrapeAmazonProduct(productUrl);
 
-    if (!scrapedProduct) return;
-
+    // if (!scrapedProduct) return;
+    console.log(scrapedProduct);
     let product = scrapedProduct;
 
     const existingProduct = await Product.findOne({ url: scrapedProduct.url });
@@ -25,11 +25,11 @@ export async function scrapeAndStoreProduct(productUrl: string) {
     if (existingProduct) {
       const updatedPriceHistory: any = [
         ...existingProduct.priceHistory,
-        { price: scrapedProduct.currentPrice },
+        { price: scrapedProduct?.currentPrice },
       ];
       // console.log("Data: ",scrapedProduct);
       // console.log("updated price history: ", updatedPriceHistory);
-      const maxPrice = scrapedProduct.originalPrice;
+      const maxPrice = scrapedProduct?.originalPrice;
       product = {
         ...scrapedProduct,
         priceHistory: updatedPriceHistory,
@@ -41,7 +41,7 @@ export async function scrapeAndStoreProduct(productUrl: string) {
      
     }
     const newProduct = await Product.findOneAndUpdate(
-      { url: scrapedProduct.url },
+      { url: scrapedProduct?.url },
       product,
       { upsert: true, new: true }
     );

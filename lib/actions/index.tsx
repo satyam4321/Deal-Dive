@@ -18,7 +18,7 @@ export async function scrapeAndStoreProduct(productUrl: string) {
 
     // if (!scrapedProduct) return;
     console.log(scrapedProduct);
-    let product = scrapedProduct;
+    let product: any = scrapedProduct;
 
     const existingProduct = await Product.findOne({ url: scrapedProduct?.url });
 
@@ -29,14 +29,17 @@ export async function scrapeAndStoreProduct(productUrl: string) {
       ];
       // console.log("Data: ",scrapedProduct);
       // console.log("updated price history: ", updatedPriceHistory);
-      const maxPrice = scrapedProduct?.originalPrice;
-      product = {
-        ...scrapedProduct,
-        priceHistory: updatedPriceHistory,
-        lowestPrice: getLowestPrice(updatedPriceHistory),
-        highestPrice: getHighestPrice(maxPrice),
-        averagePrice: getAveragePrice(updatedPriceHistory),
-      };
+      
+      if(product != undefined) {
+        const maxPrice = Number(scrapedProduct?.originalPrice);
+        product = {
+          ...scrapedProduct,
+          priceHistory: updatedPriceHistory,
+          lowestPrice: getLowestPrice(updatedPriceHistory),
+          highestPrice: getHighestPrice(maxPrice),
+          averagePrice: getAveragePrice(updatedPriceHistory),
+        };
+      }
       // console.log("UPDATED: ", product);
      
     }

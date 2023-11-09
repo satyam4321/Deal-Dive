@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { getLowestPrice, getHighestPrice, getAveragePrice, getEmailNotifType } from "@/lib/utils";
+import {
+  getLowestPrice,
+  getHighestPrice,
+  getAveragePrice,
+  getEmailNotifType,
+} from "@/lib/utils";
 import { connectToDB } from "@/lib/mongoose";
 import Product from "@/lib/models/product.model";
 import { scrapeAmazonProduct } from "@/lib/scraper";
@@ -32,14 +37,14 @@ export async function GET(request: Request) {
           },
         ];
 
+        const maxPrice = scrapedProduct.originalPrice;
         const product = {
           ...scrapedProduct,
           priceHistory: updatedPriceHistory,
           lowestPrice: getLowestPrice(updatedPriceHistory),
-          highestPrice: getHighestPrice(updatedPriceHistory),
+          highestPrice: getHighestPrice(maxPrice),
           averagePrice: getAveragePrice(updatedPriceHistory),
         };
-
         // Update Products in DB
         const updatedProduct = await Product.findOneAndUpdate(
           {
@@ -60,9 +65,14 @@ export async function GET(request: Request) {
             url: updatedProduct.url,
           };
           // Construct emailContent
-          const emailContent = await generateEmailBody(productInfo, emailNotifType);
+          const emailContent = await generateEmailBody(
+            productInfo,
+            emailNotifType
+          );
           // Get array of user emails
-          const userEmails = updatedProduct.users.map((user: any) => user.email);
+          const userEmails = updatedProduct.users.map(
+            (user: any) => user.email
+          );
           // Send email notification
           await sendEmail(emailContent, userEmails);
         }

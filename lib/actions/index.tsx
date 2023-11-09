@@ -27,23 +27,26 @@ export async function scrapeAndStoreProduct(productUrl: string) {
         ...existingProduct.priceHistory,
         { price: scrapedProduct.currentPrice },
       ];
-
+      // console.log("Data: ",scrapedProduct);
+      // console.log("updated price history: ", updatedPriceHistory);
+      const maxPrice = scrapedProduct.originalPrice;
       product = {
         ...scrapedProduct,
         priceHistory: updatedPriceHistory,
         lowestPrice: getLowestPrice(updatedPriceHistory),
-        highestPrice: getHighestPrice(updatedPriceHistory),
+        highestPrice: getHighestPrice(maxPrice),
         averagePrice: getAveragePrice(updatedPriceHistory),
       };
+      // console.log("UPDATED: ", product);
+     
     }
-
     const newProduct = await Product.findOneAndUpdate(
       { url: scrapedProduct.url },
       product,
       { upsert: true, new: true }
     );
-
     revalidatePath(`/products/${newProduct._id}`);
+   
   } catch (error: any) {
     throw new Error(`Failed to create/update product: ${error.message}`);
   }

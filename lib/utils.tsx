@@ -56,16 +56,13 @@ export function extractDescription($: any) {
   return "";
 }
 
-export function getHighestPrice(priceList: PriceHistoryItem[]) {
-  let highestPrice = priceList[0];
-
-  for (let i = 0; i < priceList.length; i++) {
-    if (priceList[i].price > highestPrice.price) {
-      highestPrice = priceList[i];
-    }
+export function getHighestPrice(priceList: Number) {
+  let highestPrice = priceList;
+  
+  if (priceList > highestPrice) {
+      highestPrice = priceList;
   }
-
-  return highestPrice.price;
+  return (Number)(highestPrice);
 }
 
 export function getLowestPrice(priceList: PriceHistoryItem[]) {

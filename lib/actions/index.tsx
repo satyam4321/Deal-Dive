@@ -9,15 +9,15 @@ import { User } from "@/types";
 import { generateEmailBody, sendEmail } from "../nodemailer";
 
 export async function scrapeAndStoreProduct(productUrl: string) {
-  // if (!productUrl) return;
+  if (!productUrl) return;
 
   try {
     await connectToDB();
 
     const scrapedProduct = await scrapeAmazonProduct(productUrl);
 
-    // if (!scrapedProduct) return;
-    console.log(scrapedProduct);
+    if (!scrapedProduct) return;
+    // console.log(scrapedProduct);
     let product: any = scrapedProduct;
 
     const existingProduct = await Product.findOne({ url: scrapedProduct?.url });
@@ -48,6 +48,7 @@ export async function scrapeAndStoreProduct(productUrl: string) {
       product,
       { upsert: true, new: true }
     );
+    revalidatePath('/');
     revalidatePath(`/products/${newProduct._id}`);
    
   } catch (error: any) {

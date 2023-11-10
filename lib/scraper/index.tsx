@@ -35,9 +35,10 @@ export async function scrapeAmazonProduct(url: string) {
     const currency = extractCurrency($(".a-price-symbol"));
     const currentPrice = extractPrice(
       currency,
-      $('.priceToPay .a-offscreen'),
-      $('.apexPriceToPay.a-price.a-text-price span.a-offscreen'),
+      $('.a-price .a-offscreen'),
+      $('.a-section .priceToPay .a-offscreen'),
       $('.a.size.base.a-color-price'),
+      $('.apexPriceToPay.a-price.a-text-price span.a-offscreen'),
       $(".a-button-selected .a-color-base")
     );
 

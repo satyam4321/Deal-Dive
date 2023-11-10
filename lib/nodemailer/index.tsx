@@ -83,7 +83,7 @@ export async function generateEmailBody(
 const transporter = nodemailer.createTransport({
   pool: true,
   service: "gmail",
-  port: (Number)(process.env.PORT),
+  port: Number(process.env.PORT),
   auth: {
     user: process.env.EMAIL,
     pass: process.env.EMAIL_PASSWORD,
@@ -101,10 +101,16 @@ export const sendEmail = async (
     html: emailContent.body,
     subject: emailContent.subject,
   };
-
-  await transporter.sendMail(mailOptions, (error: any, info: any) => {
-    if (error) return console.log(error);
-
-    console.log("Email sent: ", info);
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+          console.error(err);
+          reject(err);
+      } else {
+          console.log(info);
+          resolve(info);
+      }
+    });
   });
+  
 };

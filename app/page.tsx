@@ -4,11 +4,9 @@ import Image from "next/image";
 import { getAllProducts } from "@/lib/actions";
 import ProductCard from "@/components/ProductCard";
 import { revalidatePath } from "next/cache";
-
 const Home = async () => {
   const allProducts = await getAllProducts();
   revalidatePath('/');
-  revalidatePath('/products');
   return (
     <>
       <section className="px-6 md:px-20 py-24">
